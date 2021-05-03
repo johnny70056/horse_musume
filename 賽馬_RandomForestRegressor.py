@@ -262,7 +262,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1,random_s
 #%%    隨機森林
 rfModel = RandomForestRegressor(random_state=1000)
 rfModel.fit(x_train,y_train)
-predict_rfModel = rfModel.predict(df_test)
+predict_rfModel = rfModel.predict(x_test)
 
 
 #%%    線性回歸
@@ -270,7 +270,7 @@ predict_rfModel = rfModel.predict(df_test)
 from sklearn.linear_model import LinearRegression
 lr = LinearRegression()
 lr.fit(x_train,y_train)
-predict_lr = lr.predict(df_test)
+predict_lr = lr.predict(x_test)
 
 
 #%%    xgboost
@@ -280,7 +280,7 @@ predict_lr = lr.predict(df_test)
 
 # xgb = XGBRegressor()
 # xgb.fit(x_train,y_train)
-# predict_xgb = xgb.predict(df_test)
+# predict_xgb = xgb.predict(x_test)
 
 #%% LightGBM
 from lightgbm import LGBMRegressor
@@ -288,7 +288,7 @@ from lightgbm import LGBMClassifier
 
 gbm = LGBMRegressor()
 gbm.fit(x_train,y_train)
-predicts_gbm = gbm.predict(df_test)
+predicts_gbm = gbm.predict(x_test)
 
 #%%    catboost
 # from catboost import CatBoostRegressor
@@ -299,25 +299,25 @@ predicts_gbm = gbm.predict(df_test)
 from sklearn.ensemble import StackingRegressor
 stacking = StackingRegressor(estimators=[('gbm', gbm),('lr', lr)], final_estimator=None)
 stacking.fit(x_train,y_train)
-predict_stacking = stacking.predict(df_test)
+predict_stacking = stacking.predict(x_test)
 
 #%%    Bagging
 from sklearn.ensemble import BaggingRegressor
 
 bag = BaggingRegressor(base_estimator=rfModel, n_estimators=10)
 bag.fit(x_train,y_train)
-predict_bag = bag.predict(df_test)
+predict_bag = bag.predict(x_test)
 #%% 跑分測試
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score, roc_curve, auc
 import itertools
-# print("線性回歸 R2 Score: {}".format(r2_score(y_test,predict_lr) * 100))
-# print("stacking R2 Score: {}".format(r2_score(y_test,predict_stacking) * 100))
-# print("隨機森林 R2 Score: {}".format(r2_score(y_test,predict_rfModel) * 100))
-# #print("Xgboost R2 Score: {}".format(r2_score(y_test,predict_xgb) * 100))
-# print("LightGBM R2 Score: {}".format(r2_score(y_test,predicts_gbm) * 100))
-# #print("catboost R2 Score: {}".format(r2_score(y_test,predicts_cat) * 100))
-# print("Bagging R2 Score: {}".format(r2_score(y_test,predict_bag) * 100))
+print("線性回歸 R2 Score: {}".format(r2_score(y_test,predict_lr) * 100))
+print("stacking R2 Score: {}".format(r2_score(y_test,predict_stacking) * 100))
+print("隨機森林 R2 Score: {}".format(r2_score(y_test,predict_rfModel) * 100))
+#print("Xgboost R2 Score: {}".format(r2_score(y_test,predict_xgb) * 100))
+print("LightGBM R2 Score: {}".format(r2_score(y_test,predicts_gbm) * 100))
+#print("catboost R2 Score: {}".format(r2_score(y_test,predicts_cat) * 100))
+print("Bagging R2 Score: {}".format(r2_score(y_test,predict_bag) * 100))
 # print('---------------------------------------------------------------------')
 # print('線性回歸mean_squared_error: {}'.format(mean_squared_error(y_test, predict_lr)))
 # print('stacking mean_squared_error: {}'.format(mean_squared_error(y_test, predict_stacking)))
@@ -325,14 +325,14 @@ import itertools
 # print('LightGBM mean_squared_error: {}'.format(mean_squared_error(y_test,predicts_gbm)))
 
 #%%
-df_sub = pd.read_csv("sample_submission.csv")
+#df_sub = pd.read_csv("sample_submission.csv")
 
 #%%
 
-df_sub['value'] = predicts_gbm
+#df_sub['value'] = predicts_gbm
 
 #%%
-df_sub.to_csv("./predicts_gbm-07_submission.csv", index=False)
+#df_sub.to_csv("./predicts_gbm-07_submission.csv", index=False)
 
 #%%
 
